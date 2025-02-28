@@ -52,7 +52,7 @@ export function Checkout(embeddedCheckoutParameters: EmbeddedCheckoutParams) {
                         borderRadius: ["8px", "50px"],
                     },
                     publicKey: order.payment.preparation.checkoutcomPublicKey,
-                    environment: "sandbox",
+                    environment: "live",
                     locale: "en-US",
                     paymentSession: order.payment.preparation.checkoutcomPaymentSession,
                     onReady: () => {
