@@ -55,10 +55,6 @@ export function Checkout(embeddedCheckoutParameters: EmbeddedCheckoutParams) {
                     environment: "sandbox",
                     locale: "en-US",
                     paymentSession: order.payment.preparation.checkoutcomPaymentSession,
-                    cors: {
-                        mode: 'no-cors',
-                        credentials: 'same-origin'
-                    },
                     onReady: () => {
                         console.log("Flow is ready");
                         setIsCheckoutReady(true);
