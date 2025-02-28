@@ -1,6 +1,6 @@
 import Lottie from "lottie-react";
 import animationData from "./paperPlaneAnimation.json";
-import { CSSProperties, memo } from "react";
+import { type CSSProperties, memo } from "react";
 import { replaceColor } from "lottie-colorify";
 import Color from "color";
 
@@ -37,5 +37,8 @@ const PaperPlaneAnimation = memo(({ style }: { style?: CSSProperties }) => {
         />
     );
 });
+
+// Add display name to fix the linting error
+PaperPlaneAnimation.displayName = "PaperPlaneAnimation";
 
 export { PaperPlaneAnimation };

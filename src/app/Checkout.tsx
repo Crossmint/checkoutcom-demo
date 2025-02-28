@@ -63,7 +63,7 @@ export function Checkout(embeddedCheckoutParameters: EmbeddedCheckoutParams) {
                         console.log("Flow is ready");
                         setIsCheckoutReady(true);
                     },
-                    onPaymentCompleted: (component: any, paymentResponse: { id: string }) => {
+                    onPaymentCompleted: (component: unknown, paymentResponse: { id: string }) => {
                         console.log("Payment completed with ID:", paymentResponse.id);
                     },
                     onChange: (component: { type: string, isValid: () => boolean }) => {
@@ -139,7 +139,7 @@ export function Checkout(embeddedCheckoutParameters: EmbeddedCheckoutParams) {
                 </div>
                 {isCheckoutReady && (
                     <div className="text-center mt-4 text-sm" style={{ color: 'rgb(102, 102, 102)' }}>
-                        <p>By continuing, you accept <Image src="/crossmint_logo.svg" alt="Crossmint" width={16} height={16} className="inline-block mx-1" /> <a href="https://www.crossmint.com/legal/terms-of-service" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-800">Crossmint's terms</a></p>
+                        <p>By continuing, you accept <Image src="/crossmint_logo.svg" alt="Crossmint" width={16} height={16} className="inline-block mx-1" /> <a href="https://www.crossmint.com/legal/terms-of-service" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-800">Crossmint&apos;s terms</a></p>
                     </div>
                 )}
             </div>
@@ -149,6 +149,10 @@ export function Checkout(embeddedCheckoutParameters: EmbeddedCheckoutParams) {
 
 declare global {
     interface Window {
-        CheckoutWebComponents: any;
+        CheckoutWebComponents: (config: unknown) => {
+            create: (type: string) => {
+                mount: (element: HTMLElement) => void;
+            };
+        };
     }
 }

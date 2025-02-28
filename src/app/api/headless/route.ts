@@ -1,6 +1,7 @@
 import type { EmbeddedCheckoutParams } from "@/app/Checkout";
 import { HeadlessAPI } from "@/app/utils/api/HeadlessAPI";
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 const API_KEY = process.env.CROSSMINT_SERVER_SIDE_KEY;
 
@@ -32,6 +33,7 @@ export async function POST(request: NextRequest) {
 		const order = await headlessAPI.createOrder(params);
 		return NextResponse.json(order);
 	} catch (error) {
+		console.error("Error creating order:", error);
 		return createErrorResponse("Invalid JSON in embeddedCheckoutParameters");
 	}
 }
@@ -47,11 +49,12 @@ export async function GET(request: NextRequest) {
 		const order = await headlessAPI.getOrder(orderId);
 		return NextResponse.json(order);
 	} catch (error) {
+		console.error("Error fetching order:", error);
 		return createErrorResponse("Error fetching order", 500);
 	}
 }
 
-function createErrorResponse(message: string, status: number = 400) {
+function createErrorResponse(message: string, status = 400) {
 	return NextResponse.json({ error: true, message }, { status });
 }
 
@@ -63,12 +66,12 @@ function validateCheckoutParams(params: EmbeddedCheckoutParams): string | null {
 	}
 
 	const amount = Number(amountUSD);
-	if (isNaN(amount) || amount <= 0) {
+	if (Number.isNaN(amount) || amount <= 0) {
 		return "Invalid amountUSD value. Must be a positive number";
 	}
 
 	const slippage = Number(maxSlippageBPS);
-	if (isNaN(slippage) || slippage < 0) {
+	if (Number.isNaN(slippage) || slippage < 0) {
 		return "Invalid maxSlippageBPS value. Must be a non-negative number";
 	}
 

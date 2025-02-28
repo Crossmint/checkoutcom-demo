@@ -1,7 +1,7 @@
-import { EmbeddedCheckoutParams } from "@/app/Checkout";
+import type { EmbeddedCheckoutParams } from "@/app/Checkout";
 
 export class HeadlessAPI {
-	private baseUrl: string = "http://localhost:3000/api";
+	private baseUrl = "http://localhost:3000/api";
 	private apiKey: string;
 
 	constructor(apiKey: string) {
@@ -81,7 +81,7 @@ export class HeadlessAPI {
 	private async callApi(
 		path: string,
 		method: string,
-		body?: any,
+		body?: unknown,
 		additionalHeaders: Record<string, string> = {},
 	): Promise<Response> {
 		const requestOptions: RequestInit = {
