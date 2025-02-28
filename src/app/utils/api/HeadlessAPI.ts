@@ -1,7 +1,11 @@
 import type { EmbeddedCheckoutParams } from "@/app/Checkout";
 
+if (!process.env.CROSSMINT_BASE_URL) {
+	throw new Error("CROSSMINT_BASE_URL is not set");
+}
+
 export class HeadlessAPI {
-	private baseUrl = "http://localhost:3000/api";
+	private baseUrl = process.env.CROSSMINT_BASE_URL;
 	private apiKey: string;
 
 	constructor(apiKey: string) {
