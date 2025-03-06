@@ -32,7 +32,7 @@ function CheckoutScreen() {
                     email: "veniamin+3000@paella.dev",
                 }}
                 lineItems={{
-                    collectionLocator: "crossmint:eb280fb8-187f-456c-9831-34ce74e4e80f",
+                    collectionLocator: "crossmint:1b0656c4-8c36-45b1-9866-409afad97e08",
                     callData: {
                         quantity: "1",
                     },
