@@ -2,6 +2,7 @@
 
 import {
     CrossmintCheckoutProvider,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     CrossmintHostedCheckout,
     CrossmintProvider,
 } from "@crossmint/client-sdk-react-ui";
@@ -9,8 +10,10 @@ import { useState } from "react";
 import CheckoutScreen from "./CheckoutScreen";
 
 function EmbeddedCheckout() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [orderIdentifier, setOrderIdentifier] = useState<string | undefined>(undefined);
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     function onEvent(event: { type: string; payload: any }) {
         console.log("Event received:", event.type);
         switch (event.type) {
