@@ -37,7 +37,7 @@ function CheckoutScreen() {
                         quantity: "1",
                     },
                     executionParameters: {
-                        mode: "exact-in",
+                        mode: "exact-out",
                     },
                 } as any}
                 payment={
