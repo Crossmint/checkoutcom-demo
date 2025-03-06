@@ -52,7 +52,7 @@ export function Checkout(embeddedCheckoutParameters: EmbeddedCheckoutParams) {
                         borderRadius: ["8px", "50px"],
                     },
                     publicKey: order.payment.preparation.checkoutcomPublicKey,
-                    environment: "live",
+                    environment: "sandbox",
                     locale: "en-US",
                     paymentSession: order.payment.preparation.checkoutcomPaymentSession,
                     onReady: () => {
@@ -71,7 +71,15 @@ export function Checkout(embeddedCheckoutParameters: EmbeddedCheckoutParams) {
                     },
                 });
 
-                const flowComponent = checkout.create("flow");
+                const flowComponent = checkout.create("googlepay");
+
+                // Check if card component is available before mounting
+                const isAvailable = await flowComponent.isAvailable();
+                if (!isAvailable) {
+                    setScriptError('Card payment is not available in your region');
+                    return;
+                }
+
                 const container = document.getElementById("flow-container");
                 if (container) {
                     flowComponent.mount(container);
@@ -148,6 +156,7 @@ declare global {
         CheckoutWebComponents: (config: unknown) => {
             create: (type: string) => {
                 mount: (element: HTMLElement) => void;
+                isAvailable: () => Promise<boolean>;
             };
         };
     }
