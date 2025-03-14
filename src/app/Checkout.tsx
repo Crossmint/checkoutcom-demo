@@ -71,7 +71,7 @@ export function Checkout(embeddedCheckoutParameters: EmbeddedCheckoutParams) {
                     },
                 });
 
-                const flowComponent = checkout.create("googlepay");
+                const flowComponent = checkout.create("applepay");
 
                 // Check if card component is available before mounting
                 const isAvailable = await flowComponent.isAvailable();
