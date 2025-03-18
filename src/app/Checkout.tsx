@@ -55,8 +55,8 @@ export function Checkout(embeddedCheckoutParameters: EmbeddedCheckoutParams) {
                     environment: "live",
                     locale: "en-US",
                     paymentSession: order.payment.preparation.checkoutcomPaymentSession,
-                    onReady: () => {
-                        console.log("Flow is ready");
+                    onReady: (e: any) => {
+                        console.log("Flow is ready", e);
                         setIsCheckoutReady(true);
                     },
                     onPaymentCompleted: (component: unknown, paymentResponse: { id: string }) => {

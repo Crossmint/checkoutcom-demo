@@ -11,11 +11,12 @@ const nextConfig: NextConfig = {
 						key: "Content-Security-Policy",
 						value: `
 							default-src 'self';
-							connect-src 'self' https://*.checkout.com;
-							frame-src 'self' https://*.checkout.com;
-							script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.checkout.com;
-							img-src 'self' https://*.checkout.com;
+							connect-src 'self' https://*.checkout.com https://checkout.com;
+							frame-src 'self' https://*.checkout.com https://checkout.com;
+							script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.checkout.com https://checkout.com;
+							img-src 'self' https://*.checkout.com https://checkout.com data:;
 							style-src 'self' 'unsafe-inline';
+							form-action 'self' https://*.checkout.com https://checkout.com;
 						`
 							.replace(/\s+/g, " ")
 							.trim(),
