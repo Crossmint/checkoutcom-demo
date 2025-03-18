@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useState } from 'react';
-import Script from 'next/script';
+import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
+import { loadCheckoutWebComponents } from "@checkout.com/checkout-web-components";
 import { useOrder } from './hooks/useOrder';
 import { Spinner } from './components/ui/Spinner';
 
@@ -17,8 +17,9 @@ export function Checkout(embeddedCheckoutParameters: EmbeddedCheckoutParams) {
 
     const { createOrder, order } = useOrder();
     const [isCheckoutReady, setIsCheckoutReady] = useState(false);
-    const [isScriptLoaded, setIsScriptLoaded] = useState(false);
     const [scriptError, setScriptError] = useState<string | null>(null);
+    const flowComponentRef = useRef<any>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         async function initiateOrder() {
@@ -34,27 +35,22 @@ export function Checkout(embeddedCheckoutParameters: EmbeddedCheckoutParams) {
     }, [embeddedCheckoutParameters, createOrder]);
 
     useEffect(() => {
-        if (!order || !isScriptLoaded) return;
+        if (!order) return;
 
         console.log("order", order);
 
         const initializeCheckout = async () => {
             try {
-                if (typeof window.CheckoutWebComponents !== 'function') {
-                    setScriptError('CheckoutWebComponents not loaded properly. Please refresh the page.');
-                    return;
-                }
-
-                const checkout = await window.CheckoutWebComponents({
+                const checkout = await loadCheckoutWebComponents({
                     appearance: {
                         colorBorder: "#FFFFFF",
                         colorAction: '#060735',
                         borderRadius: ["8px", "50px"],
                     },
                     publicKey: order.payment.preparation.checkoutcomPublicKey,
-                    environment: "live",
+                    environment: "production",
                     locale: "en-US",
-                    paymentSession: order.payment.preparation.checkoutcomPaymentSession,
+                    paymentSession: order.payment.preparation.checkoutcomPaymentSession as any,
                     onReady: (e: any) => {
                         console.log("Flow is ready", e);
                         setIsCheckoutReady(true);
@@ -72,6 +68,7 @@ export function Checkout(embeddedCheckoutParameters: EmbeddedCheckoutParams) {
                 });
 
                 const flowComponent = checkout.create("applepay");
+                flowComponentRef.current = flowComponent;
 
                 // Check if card component is available before mounting
                 const isAvailable = await flowComponent.isAvailable();
@@ -80,9 +77,8 @@ export function Checkout(embeddedCheckoutParameters: EmbeddedCheckoutParams) {
                     return;
                 }
 
-                const container = document.getElementById("flow-container");
-                if (container) {
-                    flowComponent.mount(container);
+                if (containerRef.current) {
+                    flowComponent.mount(containerRef.current);
                 } else {
                     setScriptError('Could not find flow container element');
                 }
@@ -93,7 +89,18 @@ export function Checkout(embeddedCheckoutParameters: EmbeddedCheckoutParams) {
         };
 
         initializeCheckout();
-    }, [order, isScriptLoaded]);
+
+        return () => {
+            if (flowComponentRef.current) {
+                try {
+                    flowComponentRef.current.unmount();
+                    flowComponentRef.current = null;
+                } catch (error) {
+                    console.error("Error unmounting Checkout.com component:", error);
+                }
+            }
+        };
+    }, [order]);
 
     if (!order || scriptError) {
         return (
@@ -126,20 +133,8 @@ export function Checkout(embeddedCheckoutParameters: EmbeddedCheckoutParams) {
     return (
         <div className="w-full max-w-[400px] sm:max-w-[600px] md:max-w-[800px] mx-auto px-6 md:px-10">
             <div className="bg-white p-6 md:p-10 rounded-lg">
-                <Script
-                    src="https://checkout-web-components.checkout.com/index.js"
-                    strategy="afterInteractive"
-                    onLoad={() => {
-                        console.log("Checkout.com script loaded");
-                        setIsScriptLoaded(true);
-                    }}
-                    onError={(e) => {
-                        console.error("Error loading Checkout.com script:", e);
-                        setScriptError("Failed to load Checkout.com script. Please refresh the page.");
-                    }}
-                />
                 <div className="flex-grow">
-                    <div id="flow-container" className="w-full" />
+                    <div ref={containerRef} id="flow-container" className="w-full" />
                 </div>
                 {isCheckoutReady && (
                     <div className="text-center mt-4 text-sm" style={{ color: 'rgb(102, 102, 102)' }}>
@@ -149,15 +144,4 @@ export function Checkout(embeddedCheckoutParameters: EmbeddedCheckoutParams) {
             </div>
         </div>
     );
-}
-
-declare global {
-    interface Window {
-        CheckoutWebComponents: (config: unknown) => {
-            create: (type: string) => {
-                mount: (element: HTMLElement) => void;
-                isAvailable: () => Promise<boolean>;
-            };
-        };
-    }
 }

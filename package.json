@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@checkout.com/checkout-web-components": "^0.6.0-beta",
     "@crossmint/client-sdk-react-ui": "^1.15.0",
     "color": "^5.0.0",
     "lottie-colorify": "^0.8.0",
